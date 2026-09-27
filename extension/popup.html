@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Workspace Agent</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="arch-tag">⚡ LOCAL LLM ARCHITECTURE</div>
+      <h1>AI Workspace Agent</h1>
+      <p class="subtitle">Smart Assistant for Internships, Interviews & Skills</p>
+    </header>
+
+    <!-- VIEW 1: MAIN MENU -->
+    <div id="view-main-menu" class="view-step">
+      <div class="menu-card" id="btn-start-track">
+        <div class="menu-icon-box">🚀</div>
+        <div class="menu-card-text">
+          <h3>Start New Track</h3>
+          <p>Setup Internship, Interview or Skills</p>
+        </div>
+      </div>
+
+      <div class="menu-card" id="btn-continue-ws">
+        <div class="menu-icon-box">⚡</div>
+        <div class="menu-card-text">
+          <h3>Continue Workspace</h3>
+          <p>Resume your previous session</p>
+        </div>
+      </div>
+
+      <div class="menu-card" id="btn-memory-vault">
+        <div class="menu-icon-box">🧠</div>
+        <div class="menu-card-text">
+          <h3>Agent Memory Vault</h3>
+          <p>View stored context & execution logs</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: SELECT TRACK -->
+    <div id="view-select-track" class="view-step hidden">
+      <h3 class="section-title">Select Track</h3>
+      <div class="radio-group">
+        <label class="radio-item">
+          <input type="radio" name="track" value="internship" checked>
+          <span>Internship Preparation</span>
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="track" value="interview">
+          <span>Interview Preparation</span>
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="track" value="skill">
+          <span>Skill Development</span>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button id="btn-next-step" class="btn-primary">Next Step</button>
+        <button class="btn-secondary btn-back-main">Back to Main</button>
+      </div>
+    </div>
+
+    <!-- FORM 1: INTERNSHIP DETAILS -->
+    <div id="view-internship-details" class="view-step hidden">
+      <h3 class="section-title">Internship Details</h3>
+      <div class="form-group">
+        <label>Target Role/Company *</label>
+        <input type="text" id="internship-role" placeholder="e.g. Software Trainee at GAIL">
+      </div>
+      <div class="form-group">
+        <label>Upload Resume (.txt)</label>
+        <input type="file" id="internship-resume" accept=".txt">
+      </div>
+      <div class="btn-row">
+        <button id="init-internship" class="btn-primary">Initialize Workspace</button>
+        <button class="btn-secondary btn-back-select">Back</button>
+      </div>
+    </div>
+
+    <!-- FORM 2: INTERVIEW DETAILS -->
+    <div id="view-interview-details" class="view-step hidden">
+      <h3 class="section-title">Interview Details</h3>
+      <div class="form-group">
+        <label>Target Role *</label>
+        <input type="text" id="interview-role" placeholder="e.g. Backend Engineer">
+      </div>
+      <div class="form-group">
+        <label>Upload Resume (.txt)</label>
+        <input type="file" id="interview-resume" accept=".txt">
+      </div>
+      <div class="btn-row">
+        <button id="init-interview" class="btn-primary">Initialize Workspace</button>
+        <button class="btn-secondary btn-back-select">Back</button>
+      </div>
+    </div>
+
+    <!-- FORM 3: SKILL DETAILS -->
+    <div id="view-skill-details" class="view-step hidden">
+      <h3 class="section-title">Skill Details</h3>
+      <div class="form-group">
+        <label>Target Skill *</label>
+        <input type="text" id="skill-name" placeholder="e.g. Fullstack React & Node.js">
+      </div>
+      <div class="form-group">
+        <label>Upload Context/Resume (.txt)</label>
+        <input type="file" id="skill-resume" accept=".txt">
+      </div>
+      <div class="btn-row">
+        <button id="init-skill" class="btn-primary">Initialize Workspace</button>
+        <button class="btn-secondary btn-back-select">Back</button>
+      </div>
+    </div>
+
+    <!-- VIEW 3: DYNAMIC WORKSPACE HUB -->
+    <div id="view-hub" class="view-step hidden">
+      <div class="hub-header">
+        <h2 id="hub-title" class="hub-main-title">Workspace Hub</h2>
+        <button class="btn-secondary btn-back-main" style="padding: 2px 8px; font-size: 10px;">Exit Hub</button>
+      </div>
+
+      <!-- METRICS ROW -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <span id="metric-score" class="stat-number purple">80%</span>
+          <span id="metric-label" class="stat-label">RESUME MATCH</span>
+        </div>
+        <div class="stat-card border-left">
+          <span id="agent-state-badge" class="stat-number green">Ready</span>
+          <span class="stat-label">AGENT STATE</span>
+        </div>
+      </div>
+
+      <!-- AGENT SUBSYSTEMS GRID -->
+      <div class="section-label">AGENT WORKSPACE SUBSYSTEMS</div>
+      <div id="subsystems-grid" class="subsystems-grid"></div>
+
+      <!-- 1. DEDICATED SUBSYSTEM ANALYSIS CARD -->
+      <div id="subsystem-output-card" class="analysis-card">
+        <div class="analysis-section">
+          <h4 class="analysis-title">📊 Subsystem Insight: <span id="subsystem-name-display" style="color: #38bdf8;">Select Subsystem</span></h4>
+          <p id="subsystem-response-body" class="analysis-body">Click any subsystem above to get role and resume specific insights.</p>
+        </div>
+      </div>
+
+      <!-- 2. DEDICATED ASK ANYTHING SECTION -->
+      <div class="section-label" style="margin-top: 10px;">ASK OLLAMA AGENT</div>
+      
+      <div id="qa-output-card" class="analysis-card hidden">
+        <div class="analysis-section">
+          <h4 class="analysis-title">❓ Question: "<span id="qa-question-display" style="color: #f1f5f9;">-</span>"</h4>
+          <h4 class="analysis-title" style="color: #a855f7; margin-top: 4px;">💡 Agent Answer:</h4>
+          <p id="qa-response-body" class="analysis-body">Response will appear here...</p>
+        </div>
+      </div>
+
+      <!-- CHAT INPUT ROW -->
+      <div class="chat-row">
+        <input type="text" id="quick-input" placeholder="Ask Ollama Agent anything...">
+        <button id="btn-fast-send" class="btn-send">Send</button>
+      </div>
+    </div>
+
+    <!-- VIEW 4: AGENT MEMORY VAULT -->
+    <div id="view-memory-vault" class="view-step hidden">
+      <h3 class="section-title">🧠 Agent Memory Vault</h3>
+      <div id="vault-content" class="vault-container">
+        <!-- Vault cards populated via JS -->
+      </div>
+      <button class="btn-secondary btn-back-main" style="margin-top: 10px; width: 100%;">Back to Main</button>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
